@@ -651,6 +651,7 @@ class SoundGenerator {
     constructor() {
         this.audioContext = null;
         this.currentSource = null;
+        this.currentAudio = null;
     }
 
     initAudio() {
@@ -660,9 +661,7 @@ class SoundGenerator {
     }
 
     // Optimized: generate sound directly without huge intermediate arrays
-    generateSound(rivRelLvl) {
-        this.initAudio();
-
+    generateAudioData(rivRelLvl) {
         const l = Math.floor(Math.random() * 11) + 1;
         const r = Math.floor(Math.random() * 17) + 1;
         const left = Math.min(l, r);
@@ -724,21 +723,109 @@ class SoundGenerator {
         sumHmRiv = sumHmRiv.map(v => v / maxVal);
 
         // Web Audio API expects float values in [-1, 1], not 16-bit integers (but I do not care much because all exceeding peaks would be clipped anyways)
-        const audioData = sumHmRiv.map(v => v * 2.9); // trick for 'hearable' pitch
-        //const audioData = sumHmRiv;
+        return sumHmRiv.map(v => v * 2.9); // trick for 'hearable' pitch
+    }
 
+    generateSound(rivRelLvl) {
+        this.initAudio();
+        const audioData = this.generateAudioData(rivRelLvl);
         const buffer = this.audioContext.createBuffer(1, audioData.length, 44100);
         buffer.getChannelData(0).set(audioData);
         return buffer;
+    }
+
+    makeWavBlob(audioData) {
+        const numChannels = 1;
+        const sampleRate = 44100;
+        const bytesPerSample = 2;
+        const blockAlign = numChannels * bytesPerSample;
+        const byteRate = sampleRate * blockAlign;
+        const dataLength = audioData.length * bytesPerSample;
+        const buffer = new ArrayBuffer(44 + dataLength);
+        const view = new DataView(buffer);
+
+        const writeString = (offset, str) => {
+            for (let i = 0; i < str.length; i++) {
+                view.setUint8(offset + i, str.charCodeAt(i));
+            }
+        };
+
+        writeString(0, 'RIFF');
+        view.setUint32(4, 36 + dataLength, true);
+        writeString(8, 'WAVE');
+        writeString(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, byteRate, true);
+        view.setUint16(32, blockAlign, true);
+        view.setUint16(34, 16, true);
+        writeString(36, 'data');
+        view.setUint32(40, dataLength, true);
+
+        let offset = 44;
+        for (let i = 0; i < audioData.length; i++) {
+            const sample = Math.max(-1, Math.min(1, audioData[i]));
+            view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+            offset += 2;
+        }
+
+        return new Blob([buffer], { type: 'audio/wav' });
+    }
+
+    async playAudioBlob(blob) {
+        this.stop();
+
+        if (!blob || typeof window === 'undefined' || typeof URL.createObjectURL !== 'function') {
+            return false;
+        }
+
+        return new Promise(resolve => {
+            const audio = new Audio();
+            this.currentAudio = audio;
+            audio.preload = 'auto';
+            audio.src = URL.createObjectURL(blob);
+            audio.playsInline = true;
+            audio.setAttribute('playsinline', '');
+            audio.setAttribute('webkit-playsinline', '');
+
+            const cleanup = () => {
+                if (audio.src) {
+                    URL.revokeObjectURL(audio.src);
+                }
+                if (this.currentAudio === audio) {
+                    this.currentAudio = null;
+                }
+            };
+
+            audio.oncanplaythrough = () => {
+                audio.play().then(() => resolve(true)).catch(() => {
+                    cleanup();
+                    resolve(false);
+                });
+            };
+            audio.onerror = () => {
+                cleanup();
+                resolve(false);
+            };
+            audio.onended = cleanup;
+        });
     }
 
     play(buffer) {
         this.stop();
 
         this.currentSource = this.audioContext.createBufferSource();
+        const gainNode = this.audioContext.createGain();
+        gainNode.gain.value = 0.85;
+
         this.currentSource.buffer = buffer;
-        this.currentSource.connect(this.audioContext.destination);
-        this.currentSource.start();
+        this.currentSource.connect(gainNode);
+        gainNode.connect(this.audioContext.destination);
+
+        const startTime = Math.max(0, this.audioContext.currentTime + 0.02);
+        this.currentSource.start(startTime);
 
         const source = this.currentSource;
         source.onended = () => {
@@ -753,7 +840,6 @@ class SoundGenerator {
         this.currentSource = null;
         if (source) {
             try {
-                // Ensure AudioContext is running before stopping
                 if (this.audioContext && this.audioContext.state === 'suspended') {
                     this.audioContext.resume();
                 }
@@ -761,6 +847,16 @@ class SoundGenerator {
             } catch (e) {
                 // Ignore errors if already stopped
             }
+        }
+
+        if (this.currentAudio) {
+            try {
+                this.currentAudio.pause();
+                this.currentAudio.currentTime = 0;
+            } catch (e) {
+                // Ignore errors if already stopped
+            }
+            this.currentAudio = null;
         }
     }
 }
@@ -774,20 +870,28 @@ async function unlockAudioOnce() {
     soundGen.initAudio();
     if (!soundGen.audioContext) return false;
 
-    if (soundGen.audioContext.state === 'running') {
-        audioUnlocked = true;
-        return true;
-    }
-
-    if (soundGen.audioContext.state === 'suspended') {
-        try {
+    try {
+        if (soundGen.audioContext.state === 'suspended') {
             await soundGen.audioContext.resume();
+        }
+
+        if (soundGen.audioContext.state === 'running') {
+            const unlockGain = soundGen.audioContext.createGain();
+            unlockGain.gain.value = 0.0001;
+            unlockGain.connect(soundGen.audioContext.destination);
+
+            const osc = soundGen.audioContext.createOscillator();
+            osc.connect(unlockGain);
+            osc.start();
+            osc.stop(soundGen.audioContext.currentTime + 0.001);
+
+            await new Promise(resolve => setTimeout(resolve, 50));
             audioUnlocked = true;
             return true;
-        } catch (err) {
-            console.error('Audio unlock failed:', err);
-            return false;
         }
+    } catch (err) {
+        console.error('Audio unlock failed:', err);
+        return false;
     }
 
     return true;
@@ -811,8 +915,15 @@ async function playSound() {
     const min = Math.min(...values);
     const max = Math.max(...values);
     const normalized = values.map(v => v / (max - min) * 3 - 1);
-    const buffer = soundGen.generateSound(normalized);
-    soundGen.play(buffer);
+
+    const audioData = soundGen.generateAudioData(normalized);
+    const blob = soundGen.makeWavBlob(audioData);
+    const played = await soundGen.playAudioBlob(blob);
+
+    if (!played) {
+        const buffer = soundGen.generateSound(normalized);
+        soundGen.play(buffer);
+    }
 }
 
 // --- Event handlers ---
