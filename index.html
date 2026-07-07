@@ -766,6 +766,32 @@ class SoundGenerator {
 }
 
 const soundGen = new SoundGenerator();
+let audioUnlocked = false;
+
+async function unlockAudioOnce() {
+    if (audioUnlocked) return true;
+
+    soundGen.initAudio();
+    if (!soundGen.audioContext) return false;
+
+    if (soundGen.audioContext.state === 'running') {
+        audioUnlocked = true;
+        return true;
+    }
+
+    if (soundGen.audioContext.state === 'suspended') {
+        try {
+            await soundGen.audioContext.resume();
+            audioUnlocked = true;
+            return true;
+        } catch (err) {
+            console.error('Audio unlock failed:', err);
+            return false;
+        }
+    }
+
+    return true;
+}
 
 async function playSound() {
     if (!selectedPoint) return;
@@ -775,24 +801,28 @@ async function playSound() {
         return;
     }
 
-    // Ensure AudioContext is initialized and resumed before generating sound
-    soundGen.initAudio();
-    if (soundGen.audioContext && soundGen.audioContext.state === 'suspended') {
-        await soundGen.audioContext.resume();
+    const unlocked = await unlockAudioOnce();
+    if (!unlocked || !soundGen.audioContext || soundGen.audioContext.state !== 'running') {
+        alert('Audio playback is blocked until you tap the page once. Please tap anywhere on the screen and try again.');
+        return;
     }
 
     const values = levelData.values;
     const min = Math.min(...values);
     const max = Math.max(...values);
-    // const normalized = values.map(v => (v - min) / (max - min) * 2 - 1);
     const normalized = values.map(v => v / (max - min) * 3 - 1);
     const buffer = soundGen.generateSound(normalized);
-    //const buffer = values.map(v => (v - min) / (max - min) );
-
     soundGen.play(buffer);
 }
 
 // --- Event handlers ---
+
+// Unlock audio on the first user interaction, which is required on mobile browsers.
+['pointerdown', 'touchstart', 'mousedown', 'keydown'].forEach(eventName => {
+    window.addEventListener(eventName, () => {
+        unlockAudioOnce().catch(() => {});
+    }, { once: true, passive: true });
+});
 
 // Pan with mouse drag
 mapWrapper.addEventListener('mousedown', (e) => {
