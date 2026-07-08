@@ -271,11 +271,23 @@
         @media (max-width: 768px) {
             body {
                 min-height: 100svh;
+                overflow: hidden;
             }
 
-            #app,
-            #map-wrapper {
+            #app {
+                position: relative;
                 min-height: 100svh;
+                height: 100svh;
+            }
+
+            #map-wrapper {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                min-height: 0;
+                margin: 0;
+                z-index: 0;
             }
 
             #info-panel {
@@ -287,9 +299,10 @@
                 bottom: 0;
                 height: auto;
                 max-height: 72svh;
-                padding: 14px 16px 18px;
+                padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px));
                 border-radius: 16px 16px 0 0;
                 border-top: 1px solid rgba(255,255,255,0.14);
+                margin: 0;
             }
 
             #info-panel h3 {
