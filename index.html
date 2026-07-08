@@ -267,6 +267,75 @@
             border-radius: 11.5px;
             z-index: 2000;
         }
+
+        @media (max-width: 768px) {
+            body {
+                min-height: 100svh;
+            }
+
+            #app,
+            #map-wrapper {
+                min-height: 100svh;
+            }
+
+            #info-panel {
+                width: 100vw;
+                max-width: none;
+                min-width: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: auto;
+                max-height: 72svh;
+                padding: 14px 16px 18px;
+                border-radius: 16px 16px 0 0;
+                border-top: 1px solid rgba(255,255,255,0.14);
+            }
+
+            #info-panel h3 {
+                font-size: 1.05rem;
+                margin-right: 42px;
+                margin-bottom: 8px;
+            }
+
+            #info-panel p {
+                margin: 7px 0;
+                font-size: 0.95rem;
+            }
+
+            #level-chart {
+                height: 110px;
+                max-width: none;
+                margin: 10px 0 8px;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 100%;
+                padding: 12px 16px;
+                font-size: 1rem;
+            }
+
+            #controls {
+                top: 12px;
+                left: 12px;
+                gap: 6px;
+            }
+
+            .control-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 1.2rem;
+            }
+
+            #zoom-display {
+                top: auto;
+                bottom: 12px;
+                right: 12px;
+                padding: 7px 13px;
+                font-size: 0.9rem;
+            }
+        }
     </style>
 </head>
 <body>
