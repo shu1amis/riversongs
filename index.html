@@ -367,7 +367,7 @@
         <p>Технически это вычисленный звук, который производил бы осциллятор, если бы колебался по закону хода уровня рек Енисейского бассейна на выбранных гидрологических постах.</p>
         <p>В рамках этой работы выпущен альбом, для создания которого я использовала больше техник алгоритмического синтеза звука из данных гидропостов.</p> 
         <p>Альбом можно послушать на:<br>
-        Бэндкэмпе: <a href="https://shlms.bandcamp.com/album/-" target="_blank" rel="noopener noreferrer">https://shlms.bandcamp.com/album/rivers-songs</a><br>
+        Бэндкэмпе: <a href="https://shlms.bandcamp.com/album/-" target="_blank" rel="noopener noreferrer">https://shlms.bandcamp.com/album/-</a><br>
         Ютубе: <a href="https://youtu.be/ilWTYEJtL2U" target="_blank" rel="noopener noreferrer">https://youtu.be/ilWTYEJtL2U</a></p>
         <p>Меня зовут Саша Сойфер, следить за другими моими проектами можно в <a href="https://www.instagram.com/shulamis_" target="_blank" rel="noopener noreferrer">инстаграме</a> и <a href="https://t.me/shulamis" target="_blank" rel="noopener noreferrer">телеграме</a> shulamis.</p>
     </div>
@@ -539,7 +539,7 @@ const csvToDisplayName = {
     'енисей (кызыл)': 'Енисей (г. Кызыл)',
     'саяно-шушенская гэс': 'Енисей (Саяно-Шушенская ГЭС)',
     'Абакан (Абаза)': 'Абакан (г. Абаза)',
-    'усть-шадат, гм.п.Усть-Шадат': 'Шадат (посёлок Усть-Шадат)',
+    'усть-шадат': 'Шадат (посёлок Усть-Шадат)',
     'Кизир (с Имисское)': 'Кизир (село Имисское)',
     'красноярская гэс': 'Енисей (Красноярская ГЭС)',
     'кан (канск)': 'Кан (г. Канск)',
@@ -585,6 +585,10 @@ const csvToDisplayName = {
     'кислокан р тунгуска': 'Тунгуска (посёлок Кислокан)'
 };
 
+const displayNameToCsvName = Object.fromEntries(
+    Object.entries(csvToDisplayName).map(([csvName, displayName]) => [displayName, csvName])
+);
+
 async function loadCSVData() {
     try {
         const data = window.embeddedData;
@@ -598,7 +602,7 @@ async function loadCSVData() {
                 return {
                     id: index,
                     name: point.name,
-                    csvName: point.name,
+                    csvName: displayNameToCsvName[point.name] || point.name,
                     lat: point.lat,
                     lon: point.lon
                 };
@@ -669,7 +673,8 @@ function closeInfoPanel() {
 function drawLevelChart(point) {
     const canvas = document.getElementById('level-chart');
     const ctx = canvas.getContext('2d');
-    const levelData = levels[point.name];
+    const levelKey = point.csvName || point.name;
+    const levelData = levels[levelKey] || levels[point.name];
 
     const dpr = window.devicePixelRatio || 1;
     canvas.width = canvas.clientWidth * dpr;
@@ -794,7 +799,7 @@ class SoundGenerator {
         }
         sumHmRiv = sumHmRiv.map(v => v / maxVal);
 
-        return sumHmRiv.map(v => v * 2.9);
+        return sumHmRiv.map(v => v * 3.5);
     }
 
     generateSound(rivRelLvl) {
