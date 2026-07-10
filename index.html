@@ -271,11 +271,20 @@
         @media (max-width: 768px) {
             body {
                 min-height: 100svh;
+                display: flex;
+                flex-direction: column;
             }
 
-            #app,
+            #app {
+                flex: 1;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
             #map-wrapper {
-                min-height: 100svh;
+                flex: 1;
+                min-height: 0;
             }
 
             #info-panel {
@@ -527,7 +536,7 @@ const csvToDisplayName = {
     'енисей (кызыл)': 'Енисей (г. Кызыл)',
     'саяно-шушенская гэс': 'Енисей (Саяно-Шушенская ГЭС)',
     'Абакан (Абаза)': 'Абакан (г. Абаза)',
-    'усть-шадатт': 'Шадат (посёлок Усть-Шадат)',
+    'усть-шадат': 'Шадат (посёлок Усть-Шадат)',
     'Кизир (с Имисское)': 'Кизир (село Имисское)',
     'красноярская гэс': 'Енисей (Красноярская ГЭС)',
     'кан (канск)': 'Кан (г. Канск)',
@@ -782,7 +791,7 @@ class SoundGenerator {
         }
         sumHmRiv = sumHmRiv.map(v => v / maxVal);
 
-        return sumHmRiv.map(v => v * 2.9);
+        return sumHmRiv.map(v => v * 3.5);
     }
 
     generateSound(rivRelLvl) {
