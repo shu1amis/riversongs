@@ -271,8 +271,6 @@
         @media (max-width: 768px) {
             body {
                 min-height: 100svh;
-                display: flex;
-                flex-direction: column;
             }
 
             #app {
@@ -424,6 +422,10 @@ const mapImage = document.getElementById('map-image');
 const zoomDisplay = document.getElementById('zoom-display');
 
 function updateMapWrapperHeight(force = false) {
+    // On mobile, don't set inline height - let flexbox handle it
+    if (window.innerWidth <= 768) {
+        return;
+    }
     if (!mapImage.naturalWidth || !mapImage.naturalHeight) {
         mapWrapper.style.height = '100vh';
         return;
