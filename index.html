@@ -254,6 +254,11 @@
             text-decoration: underline;
         }
 
+        .quote-caption {
+            font-style: italic;
+            font-size: 15px;
+        }
+
         /* Loading */
         #loading {
             position: fixed;
@@ -269,25 +274,17 @@
         }
 
         @media (max-width: 768px) {
-            body {
-                min-height: 100svh;
-                overflow: hidden;
-            }
-
+            /* Keep the page in normal document flow so the intro panel and
+               the map scroll together as one piece, instead of the map
+               being pinned fullscreen. #app is given no min-height of its
+               own here so it always hugs #map-wrapper's real height exactly,
+               which rules out any stray gap between the two sections. */
             #app {
-                position: relative;
-                min-height: 100svh;
-                height: 100svh;
+                min-height: 0;
             }
 
             #map-wrapper {
-                position: absolute;
-                inset: 0;
-                width: 100%;
-                height: 100%;
-                min-height: 0;
-                margin: 0;
-                z-index: 0;
+                min-height: 100dvh;
             }
 
             #info-panel {
@@ -306,14 +303,14 @@
             }
 
             #info-panel h3 {
-                font-size: 1.05rem;
+                font-size: 0.89rem;
                 margin-right: 42px;
                 margin-bottom: 8px;
             }
 
             #info-panel p {
                 margin: 7px 0;
-                font-size: 0.95rem;
+                font-size: 0.81rem;
             }
 
             #level-chart {
@@ -326,7 +323,7 @@
                 width: 100%;
                 max-width: 100%;
                 padding: 12px 16px;
-                font-size: 1rem;
+                font-size: 0.85rem;
             }
 
             #controls {
@@ -346,7 +343,24 @@
                 bottom: 12px;
                 right: 12px;
                 padding: 7px 13px;
-                font-size: 0.9rem;
+                font-size: 0.77rem;
+            }
+
+            /* All text made ~15% smaller on mobile */
+            #intro-panel {
+                font-size: 0.82rem;
+            }
+
+            #intro-panel h1 {
+                font-size: 0.88rem;
+            }
+
+            .quote-caption {
+                font-size: 12.75px;
+            }
+
+            #loading {
+                font-size: 1.17rem;
             }
         }
     </style>
@@ -356,20 +370,19 @@
 
     <div id="intro-panel">
         <h1>Речные песни // Rivers' songs</h1>
-        <p>Проект на основе данных научных наблюдений, в котором звучат сибирские реки.</p>
+        <p>Проект на основе научных данных, в котором звучат сибирские реки.</p>
 
         <blockquote>
             мы обогащаемся, уча иностранный язык — но это удивительная случайность, ведь учим мы его не потому, что не можем выразиться, а потому, что наш собеседник говорит только на нём. находя новый канал коммуникации, мы преодолеваем лимитность другого; и так природа преодолевает ограниченность человека в её понимании, когда обретает голос, различимый, воспринимаемый человеческим существом.<br>
         </blockquote>
-        <p style="font-style: italic; font-size: 15px;">из вкладыша в кассету к альбому «Речные песни»</p>
+        <p class="quote-caption">из вкладыша в кассету к альбому «Речные песни»</p>
+        <br>
 
-        <p>Я предлагаю интерактивную карту, где можно послушать, что случалось с реками Енисейского бассейна за четверть века. Звук сгенерирован по архиву данных уровня рек Енисейского бассейна в 2002–2026. Годовой ход уровня складывается из сезонных колебаний (весенние паводки, зимние и летние межени) и синоптических — быстрой реакции рек на внешние события. Вместе они рассказывают о многолетних тенденциях в жизни реки вместе с минутной суетой.</p>
-        <p>Все природные черты и динамика в звуке нетронуты, потому что природный феномен не нуждается в очеловечивании или трактовке, нет необходимости вмешиваться в него композиторством: и процесс, и звук самоценны вне выстраивания отношений человека с ним.</p>
-        <p>Технически это вычисленный звук, который производил бы осциллятор, если бы колебался по закону хода уровня рек Енисейского бассейна на выбранных гидрологических постах.</p>
-        <p>В рамках этой работы выпущен альбом, для создания которого я использовала больше техник алгоритмического синтеза звука из данных гидропостов.</p> 
-        <p>Альбом можно послушать на:<br>
-        Бэндкэмпе: <a href="https://shlms.bandcamp.com/album/rivers-songs" target="_blank" rel="noopener noreferrer">https://shlms.bandcamp.com/album/rivers-songs</a><br>
-        Ютубе: <a href="https://youtu.be/ilWTYEJtL2U" target="_blank" rel="noopener noreferrer">https://youtu.be/ilWTYEJtL2U</a></p>
+        <p>На этой карте реки Енисейского бассейна рассказывают, что случилось с ними за четверть века. Звук сгенерирован из архивных данных уровня рек; его годовой ход складывается из сезонных колебаний и синоптических (быстрой реакции на внешние события). Вместе они рассказывают о многолетних тенденциях в жизни реки вместе с минутной суетой.</p>
+        <p>Звук не тронут обработкой, потому что природный феномен не нуждается в участии композитора, очеловечивании или трактовке: и процесс, и звук самоценны вне выстраивания отношений человека с ним. Технически же вы слышите синусоидальный осциллятор, колеблющийся синхронно колебаниям уровня реки.</p>
+        <br>
+        <p>В рамках этой работы выпущен альбом (<a href="https://youtu.be/ilWTYEJtL2U" target="_blank" rel="noopener noreferrer">youtube</a>|<a href="https://shlms.bandcamp.com/album/rivers-songs" target="_blank" rel="noopener noreferrer">bandcamp</a>), для создания которого использованы и другие техники алгоритмического синтеза звука из гидрологических данных.</p> 
+        <br>
         <p>Меня зовут Саша Сойфер, следить за другими моими проектами можно в <a href="https://www.instagram.com/shulamis_" target="_blank" rel="noopener noreferrer">инстаграме</a> и <a href="https://t.me/shulamis" target="_blank" rel="noopener noreferrer">телеграме</a> shulamis.</p>
     </div>
 
@@ -427,6 +440,14 @@ const mapWrapper = document.getElementById('map-wrapper');
 const mapImage = document.getElementById('map-image');
 const zoomDisplay = document.getElementById('zoom-display');
 
+// window.innerHeight can lag behind the real, current viewport on mobile
+// browsers while their address bar/toolbar is showing or hiding (e.g. while
+// scrolling). visualViewport.height tracks that in real time where it's
+// available, so prefer it.
+function getViewportHeight() {
+    return (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+}
+
 function updateMapWrapperHeight(force = false) {
     if (!mapImage.naturalWidth || !mapImage.naturalHeight) {
         mapWrapper.style.height = '100vh';
@@ -438,7 +459,7 @@ function updateMapWrapperHeight(force = false) {
     }
 
     const scaledHeight = mapImage.naturalHeight * scale;
-    const viewportHeight = window.innerHeight;
+    const viewportHeight = getViewportHeight();
     mapWrapper.style.height = `${Math.max(viewportHeight, Math.ceil(scaledHeight))}px`;
     wrapperHeightLocked = true;
 }
@@ -461,27 +482,39 @@ function clampTranslation() {
     const scaledWidth = imgWidth * scale;
     const scaledHeight = imgHeight * scale;
 
-    // Max translation: map's right/bottom edge at viewport's right/bottom
-    // Min translation: map's left/top edge at viewport's left/top
-    const maxTranslateX = Math.min(0, wrapperRect.width - scaledWidth);
-    const maxTranslateY = Math.min(0, wrapperRect.height - scaledHeight);
-    const minTranslateX = Math.max(0, wrapperRect.width - scaledWidth);
-    const minTranslateY = Math.max(0, wrapperRect.height - scaledHeight);
-
-    // Actually, let's think about this more carefully:
     // When scale=1, translateX=0 means left edge of map at left edge of viewport
     // translateX negative means map moved right (showing left side of map)
     // translateX positive means map moved left (showing right side of map)
-    // So: min translateX = wrapperRect.width - scaledWidth (map right at viewport right)
-    //     max translateX = 0 (map left at viewport left)
-
-    const minTx = wrapperRect.width - scaledWidth;
+    // min translateX = wrapperRect.width - scaledWidth (map right at viewport right)
+    // max translateX = 0 (map left at viewport left)
+    //
+    // If the scaled map is smaller than the wrapper in an axis (e.g. at a
+    // very small zoom level), that "min" would come out positive, which
+    // would push the map away from the top-left corner and leave a visible
+    // gap above/left of it. Clamp min to 0 so the map always stays pinned
+    // to the top-left when it doesn't fill the wrapper.
+    const minTx = Math.min(0, wrapperRect.width - scaledWidth);
     const maxTx = 0;
-    const minTy = wrapperRect.height - scaledHeight;
+    const minTy = Math.min(0, wrapperRect.height - scaledHeight);
     const maxTy = 0;
 
     translateX = Math.max(minTx, Math.min(maxTx, translateX));
     translateY = Math.max(minTy, Math.min(maxTy, translateY));
+}
+
+// The scale at which the image fully covers the wrapper in both directions
+// (same idea as background-size: cover). Used both as the hard floor for
+// zooming out and as the starting scale, so the map can never be displayed
+// smaller than what's needed to fill the wrapper - which is what used to
+// leave a gap above/below the map at very small zoom levels.
+function getCoverScale(rect) {
+    if (!mapImage.naturalWidth || !mapImage.naturalHeight) return 1;
+    const r = rect || mapWrapper.getBoundingClientRect();
+    const wrapperWidth = r.width || window.innerWidth;
+    return Math.max(
+        wrapperWidth / mapImage.naturalWidth,
+        getViewportHeight() / mapImage.naturalHeight
+    );
 }
 
 function zoom(delta, centerX = null, centerY = null) {
@@ -490,10 +523,7 @@ function zoom(delta, centerX = null, centerY = null) {
     const targetY = centerY === null ? rect.height / 2 : centerY - rect.top;
 
     // Calculate minimum scale to fit the visible viewport
-    const minScale = Math.max(
-        rect.width / mapImage.naturalWidth,
-        window.innerHeight / mapImage.naturalHeight
-    );
+    const minScale = getCoverScale(rect);
     const newScale = Math.max(minScale, Math.min(5, scale * delta));
     const scaleRatio = newScale / scale;
 
@@ -507,9 +537,7 @@ function zoom(delta, centerX = null, centerY = null) {
 
 function getInitialScale() {
     if (!mapImage.naturalWidth) return 0.85;
-    const wrapperWidth = mapWrapper.getBoundingClientRect().width || window.innerWidth;
-    const widthScale = wrapperWidth / mapImage.naturalWidth;
-    return Math.min(1, Math.max(0.2, widthScale));
+    return Math.min(1, Math.max(0.2, getCoverScale()));
 }
 
 function resetView() {
@@ -795,7 +823,7 @@ class SoundGenerator {
         }
         sumHmRiv = sumHmRiv.map(v => v / maxVal);
 
-        return sumHmRiv.map(v => v * 2.9);
+        return sumHmRiv.map(v => v * 3.9);
     }
 
     generateSound(rivRelLvl) {
@@ -1017,15 +1045,38 @@ document.getElementById('reset-view').addEventListener('click', resetView);
 // Double-click to reset
 mapWrapper.addEventListener('dblclick', resetView);
 
-// Touch support for mobile
+// Touch support for mobile.
+// A single finger only pans the map once we know the gesture actually has
+// room to move the map in that direction; otherwise we leave the touch
+// alone so the browser scrolls the page natively. This is what lets a user
+// swipe back up off the map to reach the info panel above it. Two fingers
+// always pan/pinch-zoom the map (consistent with pinch-zoom already needing
+// two fingers).
 let lastTouchDist = 0;
+let touchGestureMode = null; // null = undecided this gesture, 'pan', or 'scroll'
+const TOUCH_DECISION_THRESHOLD = 4; // px of movement before committing to a mode
+
+function getPanBounds() {
+    const rect = mapWrapper.getBoundingClientRect();
+    const scaledWidth = mapImage.naturalWidth * scale;
+    const scaledHeight = mapImage.naturalHeight * scale;
+    return {
+        minTx: Math.min(0, rect.width - scaledWidth),
+        maxTx: 0,
+        minTy: Math.min(0, rect.height - scaledHeight),
+        maxTy: 0
+    };
+}
+
 mapWrapper.addEventListener('touchstart', (e) => {
     if (e.touches.length === 1) {
         isPanning = true;
         lastPanX = e.touches[0].clientX;
         lastPanY = e.touches[0].clientY;
+        touchGestureMode = null;
     } else if (e.touches.length === 2) {
         isPanning = false;
+        touchGestureMode = 'pan';
         lastTouchDist = Math.hypot(
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
@@ -1034,14 +1085,35 @@ mapWrapper.addEventListener('touchstart', (e) => {
 }, { passive: false });
 
 mapWrapper.addEventListener('touchmove', (e) => {
-    e.preventDefault();
     if (e.touches.length === 1 && isPanning) {
-        translateX += e.touches[0].clientX - lastPanX;
-        translateY += e.touches[0].clientY - lastPanY;
-        lastPanX = e.touches[0].clientX;
-        lastPanY = e.touches[0].clientY;
-        updateTransform();
+        const touch = e.touches[0];
+        const dx = touch.clientX - lastPanX;
+        const dy = touch.clientY - lastPanY;
+
+        if (touchGestureMode === null) {
+            if (Math.abs(dx) + Math.abs(dy) < TOUCH_DECISION_THRESHOLD) {
+                return; // not enough movement yet to know intent
+            }
+            const bounds = getPanBounds();
+            const horizontal = Math.abs(dx) >= Math.abs(dy);
+            const canPan = horizontal
+                ? (dx > 0 && translateX < bounds.maxTx - 0.5) || (dx < 0 && translateX > bounds.minTx + 0.5)
+                : (dy > 0 && translateY < bounds.maxTy - 0.5) || (dy < 0 && translateY > bounds.minTy + 0.5);
+            touchGestureMode = canPan ? 'pan' : 'scroll';
+        }
+
+        if (touchGestureMode === 'pan') {
+            e.preventDefault();
+            translateX += dx;
+            translateY += dy;
+            lastPanX = touch.clientX;
+            lastPanY = touch.clientY;
+            updateTransform();
+        }
+        // In 'scroll' mode we intentionally do nothing here and skip
+        // preventDefault so the browser scrolls the page as normal.
     } else if (e.touches.length === 2) {
+        e.preventDefault();
         const dist = Math.hypot(
             e.touches[0].clientX - e.touches[1].clientX,
             e.touches[0].clientY - e.touches[1].clientY
@@ -1057,6 +1129,13 @@ mapWrapper.addEventListener('touchmove', (e) => {
 
 mapWrapper.addEventListener('touchend', () => {
     isPanning = false;
+    touchGestureMode = null;
+    lastTouchDist = 0;
+});
+
+mapWrapper.addEventListener('touchcancel', () => {
+    isPanning = false;
+    touchGestureMode = null;
     lastTouchDist = 0;
 });
 
@@ -1069,13 +1148,29 @@ mapWrapper.addEventListener('click', (e) => {
 
 // Load data
 window.onload = loadCSVData;
-window.addEventListener('resize', () => {
-    if (mapImage.complete) {
-        wrapperHeightLocked = false;
-        updateMapWrapperHeight(true);
-        updateTransform();
+
+// Mobile browsers change the effective viewport height (address bar/toolbar
+// showing or hiding, often while the user scrolls) without necessarily
+// firing a plain window 'resize' event, and can leave the current zoom
+// under-covering the new, taller viewport - which is what let the gap
+// beneath the map reappear intermittently. Re-check coverage on every
+// signal we can get for a viewport change.
+function handleViewportChange() {
+    if (!mapImage.complete) return;
+    const minScale = getCoverScale();
+    if (scale < minScale) {
+        scale = minScale;
     }
-});
+    wrapperHeightLocked = false;
+    updateMapWrapperHeight(true);
+    updateTransform();
+}
+
+window.addEventListener('resize', handleViewportChange);
+window.addEventListener('orientationchange', handleViewportChange);
+if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', handleViewportChange);
+}
 </script>
 </body>
 </html>
