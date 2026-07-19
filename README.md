@@ -13,8 +13,8 @@
 
 <br>
 Все природные черты и динамика в звуке нетронуты, потому что природный феномен не нуждается в участии композитора, очеловечивании или трактовке: и процесс, и звук самоценны вне выстраивания отношений человека с ним. Технически же вы слышите синусоидальный осциллятор, колеблющийся синхронно колебаниям уровня реки.
-
 <br>
+
 В рамках этой работы выпущен альбом ([youtube](https://youtu.be/ilWTYEJtL2U) | [bandcamp](https://shlms.bandcamp.com/album/rivers-songs)), для создания которого использованы и другие техники алгоритмического синтеза звука из гидрологических данных.
 
 Меня зовут Саша Сойфер, я океанолог, музыкант, science art художница.
@@ -35,7 +35,7 @@ In this interactive map, the rivers in the Yenisei Basin tell what has happened 
 All natural features and dynamics in the sound remain intact, because a natural phenomenon does not require the composer’s intervention, humanization, or interpretation: both the process and the sound are valuable in and of themselves, independent of any human relationship to them. Technically, you hear a sinusoidal oscillator fluctuating in sync with the river’s water level.
 <br>
 
-As part of this project, an album ([youtube](https://youtu.be/ilWTYEJtL2U) | [bandcamp](https://shlms.bandcamp.com/album/rivers-songs)) with wider use of algorithmic sound synthesis from hydrological data was released. \
+As part of this project, an album ([youtube](https://youtu.be/ilWTYEJtL2U) | [bandcamp](https://shlms.bandcamp.com/album/rivers-songs)) with wider use of algorithmic sound synthesis from hydrological data was released.
 
 My name is Sasha Soyfer; I’m an oceanographer, musician, and science artist.
 You can follow my other projects on [Instagram](https://www.instagram.com/shulamis_) and [Telegram](https://t.me/shulamis) under the username shulamis.
